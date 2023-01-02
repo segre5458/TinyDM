@@ -1,4 +1,4 @@
-DISTFILE=emptty
+DISTFILE=tinydm
 
 # test:
 # 	@echo "Testing..."
@@ -17,6 +17,7 @@ build:
 	@mkdir -p dist
 	# @go build ${TAGS_ARGS} -o dist/${DISTFILE} -ldflags "-X github.com/tvrzna/emptty/src.buildVersion=${BUILD_VERSION}" ${GOVCS}
 	# @gzip -cn res/emptty.1 > dist/emptty.1.gz
+	@go build .
 	@echo "Done"
 
 install:

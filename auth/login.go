@@ -15,7 +15,7 @@ func Login() {
 }
 
 func AuthUser() *sysuser {
-	t, err := pam.StartFunc("se", "s", func(s pam.Style, msg string) (string, error) {
+	t, err := pam.StartFunc("tinydm", "", func(s pam.Style, msg string) (string, error) {
 		switch s {
 		case pam.PromptEchoOff:
 			fmt.Print(msg)
