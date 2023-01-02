@@ -2,11 +2,12 @@ package auth
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/msteinert/pam"
+	"golang.org/x/term"
 )
 
 func Login() {
@@ -14,24 +15,40 @@ func Login() {
 }
 
 func AuthUser() *sysuser {
-	trans, _ := pam.StartFunc("tidydm", "segre", func(s pam.Style, msg string) (string, error) {
-		hostname, _ := os.Hostname()
-		fmt.Printf("%s login: \n", hostname)
-		fmt.Print("Password: ")
-
-		// fd := os.Stdout.Fd()
-		// c := make(chan os.Signal, 1)
-		// signal.Notify(c)
-
-		// go handleInt
-		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
-		if err != nil {
-			return "", err
+	t, err := pam.StartFunc("se", "s", func(s pam.Style, msg string) (string, error) {
+		switch s {
+		case pam.PromptEchoOff:
+			fmt.Print(msg)
+			pw, err := term.ReadPassword(int(os.Stdin.Fd()))
+			if err != nil {
+				return "", err
+			}
+			fmt.Println()
+			return string(pw), nil
+		case pam.PromptEchoOn:
+			fmt.Print(msg)
+			s := bufio.NewScanner(os.Stdin)
+			s.Scan()
+			return s.Text(), nil
+		case pam.ErrorMsg:
+			fmt.Fprintf(os.Stderr, "%s\n", msg)
+			return "", nil
+		case pam.TextInfo:
+			fmt.Println(msg)
+			return "", nil
+		default:
+			return "", errors.New("unrecognized message style")
 		}
-		fmt.Println()
-		return input[:len(input)-1], nil
 	})
-	_ = trans.Authenticate(pam.Silent)
-	log.Print("Authenticate OK")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "start: %s\n", err.Error())
+		os.Exit(1)
+	}
+	err = t.Authenticate(pam.Silent)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "authenticate: %s\n", err.Error())
+		os.Exit(1)
+	}
+	fmt.Println("authentication succeeded!")
 	return nil
 }
