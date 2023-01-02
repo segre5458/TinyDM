@@ -1,0 +1,16 @@
+[Unit]
+Description=tiny display manager
+After=systemd-user-sessions.service
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/tinydm -d
+Restart=always
+TTYPath=/dev/tty7
+TTYReset=yes
+KillMode=process
+IgnoreSIGPIPE=no
+SendSIGHUP=yes
+
+[Install]
+Alias=display-manager.service

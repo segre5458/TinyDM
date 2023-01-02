@@ -39,3 +39,19 @@ func (d *dbus) launch(usr *sysuser) {
 		}
 	}
 }
+
+func (d *dbus) intrrupt(){
+	if d.pid <= 0{
+		return
+	}
+	proc,err := os.FindProcess(d.pid)
+	if err != nil{
+		log.Fatal(err.Error())
+	}
+	if proc != nil{
+		err = proc.Signal(os.Interrupt)
+		if err != nil{
+			log.Fatal(err.Error())
+		}
+	}
+}

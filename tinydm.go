@@ -8,7 +8,7 @@ import (
 )
 
 func Main() {
-	// fTTY, err := os.OpenFile("/dev/tty0", os.O_RDWR, 0700)
+	// fTTY, err := os.OpenFile("/dev/tty7", os.O_RDWR, 0700)
 	// if err != nil{
 	// 	log.Fatal(err)
 	// }
@@ -16,4 +16,5 @@ func Main() {
 	// os.Stdin = fTTY
 	// os.Stderr = fTTY
 	auth.Login()
+	// fTTY.Close()
 }
