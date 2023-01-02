@@ -1,7 +1,11 @@
 package main
 
-import tinydm "github.com/segre5458/tinydm/src"
+import(
+	"github.com/segre5458/tinyDM/auth"
+	"github.com/segre5458/tinyDM/ui"
+	"gihub.com/segre5458/tinyDM/var"
+)
 
 func main(){
-	tinydm.Main()
+	Main()
 }
